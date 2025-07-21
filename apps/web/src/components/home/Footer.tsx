@@ -12,7 +12,7 @@ const menuItems = [
   },
   {
     title: "Get Started",
-    url: "/notes",
+    url: "/suggestions",
   },
   {
     title: "Reviews",

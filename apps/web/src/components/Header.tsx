@@ -11,135 +11,33 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./common/Logo";
 import { UserNav } from "./common/UserNav";
+import React from "react";
 
-type NavigationItem = {
-  name: string;
-  href: string;
-  current: boolean;
+interface HeaderProps {
+  onDreamClosetClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onDreamClosetClick }) => {
+  return (
+    <header className="fashion-header flex flex-col sm:flex-row items-center justify-between px-6 py-6 bg-[#f8fafc] border-b border-gray-200 shadow-sm gap-4 sm:gap-0">
+      <div className="fashion-header-title-group flex items-center gap-3">
+        {/* Replace logo with a hanger emoji or similar, or update image if you have a new icon */}
+        <span className="text-3xl">👗</span>
+        <span className="fashion-header-title text-2xl font-bold font-serif text-gray-900">YourPersonalStylist</span>
+      </div>
+      <span className="fashion-header-subtitle text-lg sm:text-xl text-gray-600 font-light text-center sm:text-left px-2">Curate your dream closet with AI-powered recs!</span>
+      <div className="flex items-center gap-4">
+        <button className="fashion-header-btn px-4 py-2 rounded bg-[#ede6fa] text-[#7b4ae2] font-semibold hover:bg-[#e3d6fa] transition" onClick={onDreamClosetClick}>
+          Your Dream Closet
+        </button>
+        <a href="/closet">
+          <button className="ml-2 px-4 py-2 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition font-medium shadow-sm">
+            View Closet
+          </button>
+        </a>
+      </div>
+    </header>
+  );
 };
 
-const navigation: NavigationItem[] = [
-  { name: "Benefits", href: "#Benefits", current: true },
-  { name: "Reviews", href: "#reviews", current: false },
-];
-
-export default function Header() {
-  const { user } = useUser();
-  const pathname = usePathname();
-
-  return (
-    <Disclosure as="nav" className=" ">
-      {({ open }) => (
-        <>
-          <div className="flex items-center bg-white h-16 sm:h-20">
-            <div className="container px-2 sm:px-0">
-              <div className="relative flex h-16 items-center justify-between">
-                <div className="flex sm:hidden shrink-0 items-center">
-                  <Logo isMobile={true} />
-                </div>
-                <div className="sm:flex hidden shrink-0 items-center">
-                  <Logo />
-                </div>
-                {pathname === "/" && (
-                  <div className="flex flex-1 items-center justify-center ">
-                    <div className="hidden sm:ml-6 sm:block">
-                      <ul className="flex space-x-28">
-                        {navigation.map((item) => (
-                          <li key={item.name}>
-                            <Link
-                              href={item.href}
-                              className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
-                              aria-current={item.current ? "page" : undefined}
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-                {user ? (
-                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <Link href="/notes">
-                      <button
-                        type="button"
-                        className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
-                      >
-                        See your Notes
-                      </button>
-                    </Link>
-                    <div className="flex items-center gap-2">
-                      <UserNav
-                        image={user?.imageUrl}
-                        name={user?.fullName || "User"}
-                        email={user?.primaryEmailAddress?.emailAddress || ""}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="hidden sm:flex absolute inset-y-0 right-0 gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <Link
-                      href="/notes"
-                      className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-2.5"
-                    >
-                      Sign in
-                    </Link>
-                    <Link
-                      href="/notes"
-                      className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-[22px] py-[11px] button"
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                )}
-                <div className="block sm:hidden">
-                  {/* Mobile menu button*/}
-                  <DisclosureButton className="relative inline-flex  items-center justify-center rounded-md p-2 text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white">
-                    <span className="absolute -inset-0.5" />
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </DisclosureButton>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <DisclosurePanel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2 flex flex-col gap-3 items-start">
-              {navigation.map((item) => (
-                <DisclosureButton
-                  key={item.name}
-                  as={Link}
-                  href={item.href}
-                  className="text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal]"
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </DisclosureButton>
-              ))}
-              <div className="flex gap-6 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Link
-                  href="/notes"
-                  className="border rounded-lg border-solid border-[#2D2D2D] text-[#2D2D2D] text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-[5px]"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/notes"
-                  className=" text-white text-center text-xl not-italic font-normal leading-[normal] font-montserrat px-5 py-1.5 button"
-                >
-                  Get Started
-                </Link>
-              </div>
-            </div>
-          </DisclosurePanel>
-        </>
-      )}
-    </Disclosure>
-  );
-}
+export default Header;
