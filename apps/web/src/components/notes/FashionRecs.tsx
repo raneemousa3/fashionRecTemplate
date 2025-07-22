@@ -43,7 +43,83 @@ const MOCK_OUTFITS = [
       tip: "Mix heirloom pieces with modern basics."
     }
   },
+  // New hardcoded suggestions
+  {
+    keywords: ["date", "night", "romantic", "dinner"],
+    outfit: {
+      title: "Romantic Date Night",
+      top: "Red silk wrap blouse",
+      bottom: "Black high-waisted pencil skirt",
+      shoes: "Strappy stiletto heels",
+      accessories: "Diamond studs, clutch bag",
+      tip: "A pop of red always makes a statement."
+    }
+  },
+  {
+    keywords: ["street", "casual", "urban", "cool"],
+    outfit: {
+      title: "Urban Street Style",
+      top: "Oversized graphic hoodie",
+      bottom: "Distressed denim jeans",
+      shoes: "Chunky white sneakers",
+      accessories: "Bucket hat, crossbody bag",
+      tip: "Layer for both comfort and edge."
+    }
+  },
+  {
+    keywords: ["beach", "vacation", "resort", "tropical"],
+    outfit: {
+      title: "Tropical Beach Day",
+      top: "Flowy floral kimono",
+      bottom: "High-waisted bikini bottoms",
+      shoes: "Slide sandals",
+      accessories: "Wide-brim hat, shell necklace",
+      tip: "Go for breezy fabrics and bold prints."
+    }
+  },
+  {
+    keywords: ["winter", "cozy", "chic", "cold"],
+    outfit: {
+      title: "Cozy Winter Chic",
+      top: "Chunky knit turtleneck sweater",
+      bottom: "Wool plaid trousers",
+      shoes: "Knee-high suede boots",
+      accessories: "Beret, oversized scarf",
+      tip: "Mix textures for warmth and style."
+    }
+  },
+  {
+    keywords: ["festival", "music", "boho", "outdoor"],
+    outfit: {
+      title: "Boho Festival Vibes",
+      top: "Crochet crop top",
+      bottom: "Fringed denim shorts",
+      shoes: "Ankle boots",
+      accessories: "Layered necklaces, round sunglasses",
+      tip: "Embrace playful accessories and patterns."
+    }
+  },
+  {
+    keywords: ["athleisure", "sporty", "gym", "active"],
+    outfit: {
+      title: "Sporty Athleisure",
+      top: "Moisture-wicking tank top",
+      bottom: "High-rise leggings",
+      shoes: "Running trainers",
+      accessories: "Fitness tracker, baseball cap",
+      tip: "Function meets fashion for on-the-go days."
+    }
+  },
 ];
+
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 function getMockOutfit(prompt: string) {
   const lower = prompt.toLowerCase();
@@ -71,7 +147,7 @@ interface FashionRecsProps {
 export default function FashionRecs({ showCloset, setShowCloset }: FashionRecsProps) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [results, setResults] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [closet, setCloset] = useState<any[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -98,7 +174,7 @@ export default function FashionRecs({ showCloset, setShowCloset }: FashionRecsPr
 
   const handleClear = () => {
     setPrompt("");
-    setResult(null);
+    setResults([]);
     setError(null);
     inputRef.current?.focus();
   };
@@ -106,12 +182,13 @@ export default function FashionRecs({ showCloset, setShowCloset }: FashionRecsPr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setResult(null);
+    setResults([]);
     setError(null);
     setTimeout(() => {
       try {
-        const outfit = getMockOutfit(prompt);
-        setResult(outfit);
+        // Shuffle and pick 5 unique outfits
+        const recs = shuffleArray(MOCK_OUTFITS).slice(0, 5).map((entry) => entry.outfit);
+        setResults(recs);
       } catch (err) {
         setError("Something went wrong");
       } finally {
@@ -121,50 +198,20 @@ export default function FashionRecs({ showCloset, setShowCloset }: FashionRecsPr
   };
 
   const handleAddToCloset = () => {
-    if (result) {
-      setCloset((prev) => [...prev, result]);
-      setResult(null);
-      setPrompt("");
+    if (results.length > 0) {
+      setCloset((prev) => [...prev, results[0]]);
+      setResults((prev) => prev.slice(1));
     }
   };
 
   const handleSkip = () => {
-    setResult(null);
-    setPrompt("");
+    if (results.length > 0) {
+      setResults((prev) => prev.slice(1));
+    }
   };
 
   const handleRemoveFromCloset = (idx: number) => {
     setCloset((prev) => prev.filter((_, i) => i !== idx));
-  };
-
-  const renderResultCard = () => {
-    if (loading) {
-      return <div className="card loading">Loading outfit suggestion...</div>;
-    }
-    if (error) {
-      return <div className="card error">{error}</div>;
-    }
-    if (result) {
-      return (
-        <div className="card result">
-          <h2>{result.title}</h2>
-          <p><b>Top:</b> {result.top}</p>
-          <p><b>Bottom:</b> {result.bottom}</p>
-          <p><b>Shoes:</b> {result.shoes}</p>
-          <p><b>Accessories:</b> {result.accessories}</p>
-          <p><i>{result.tip}</i></p>
-          <div style={{ marginTop: 16 }}>
-            <button className="submit-btn" onClick={handleAddToCloset} style={{ marginRight: 8 }}>
-              Add to My Closet
-            </button>
-            <button className="clear-btn" onClick={handleSkip}>
-              Skip
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return <div className="card placeholder">Enter a fashion prompt to get started!</div>;
   };
 
   return (
@@ -200,25 +247,28 @@ export default function FashionRecs({ showCloset, setShowCloset }: FashionRecsPr
           ))}
         </div>
       </div>
-      <div className="fashion-main-card">
+      <div className="fashion-main-card flex flex-col items-center min-h-[300px]">
         {loading && (
           <div className="fashion-loading">Finding your look...</div>
         )}
         {error && (
           <div className="fashion-error">{error}</div>
         )}
-        {!loading && !error && result && (
+        {!loading && !error && results.length > 0 && (
           <FashionOutfitCard
-            title={result.title}
-            top={result.top}
-            bottom={result.bottom}
-            shoes={result.shoes}
-            accessories={result.accessories}
-            quote={result.tip}
+            title={results[0].title}
+            top={results[0].top}
+            bottom={results[0].bottom}
+            shoes={results[0].shoes}
+            accessories={results[0].accessories}
+            quote={results[0].tip}
           >
             <button className="fashion-btn fashion-btn-primary" onClick={handleAddToCloset}>Add to My Closet</button>
             <button className="fashion-btn fashion-btn-secondary" onClick={handleSkip}>Skip</button>
           </FashionOutfitCard>
+        )}
+        {!loading && !error && results.length === 0 && prompt && (
+          <div className="text-gray-400 text-lg mt-8">No more recommendations. Try a new prompt!</div>
         )}
       </div>
       {showCloset && (

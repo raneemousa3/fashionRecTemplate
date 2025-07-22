@@ -1,0 +1,130 @@
+/* App.css - Fashion AI App Styles */
+
+.app-container {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.7rem;
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+}
+
+.prompt-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.prompt-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+.prompt-input:focus {
+  border-color: #6366f1;
+}
+
+.submit-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.submit-btn:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0 0.7rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.clear-btn:disabled {
+  background: #f1f5f9;
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.preset-btn {
+  background: #f1f5f9;
+  color: #6366f1;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.preset-btn:disabled {
+  color: #a5b4fc;
+  cursor: not-allowed;
+}
+.preset-btn:hover:not(:disabled) {
+  background: #6366f1;
+  color: #fff;
+}
+
+.result-section {
+  margin-top: 1.2rem;
+}
+
+.card {
+  background: #f8fafc;
+  border-radius: 0.8rem;
+  padding: 1.2rem 1.1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  font-size: 1.05rem;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+  font-size: 1.2rem;
+  color: #6366f1;
+}
+.card.loading {
+  color: #64748b;
+  font-style: italic;
+}
+.card.error {
+  color: #dc2626;
+  background: #fef2f2;
+}
+.card.result {
+  border-left: 4px solid #6366f1;
+}
+.card.placeholder {
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+} 
